@@ -1,7 +1,10 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Toast from "../components/Toast";
 
 export default function Layout() {
     const navigate = useNavigate();
+    const [toast, setToast] = useState({ message: "", type: "error" });
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -11,6 +14,13 @@ export default function Layout() {
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh' }}>
+            {/* Componente Toast Global */}
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ ...toast, message: "" })}
+            />
+
             <aside style={{ width: '250px', backgroundColor: '#2c3e50', color: 'white', padding: '20px' }}>
                 <h2>LogiTrack</h2>
                 <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
@@ -28,7 +38,9 @@ export default function Layout() {
                 <header style={{ marginBottom: '20px', borderBottom: '2px solid #bdc3c7', paddingBottom: '10px' }}>
                     <h1>Panel de Control</h1>
                 </header>
-                <Outlet />
+
+                {/* Pasamos el setToast a las páginas para que puedan mostrar errores */}
+                <Outlet context={{ showToast: (msg, type = "error") => setToast({ message: msg, type }) }} />
             </main>
         </div>
     );
