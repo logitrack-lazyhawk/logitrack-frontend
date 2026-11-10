@@ -1,0 +1,264 @@
+
+.ce-contenedor {
+    max-width: 1050px;
+    margin: 0 auto;
+    color: #1e293b;
+}
+
+.ce-contenedor * {
+    box-sizing: border-box;
+}
+
+.ce-encabezado {
+    margin-bottom: 28px;
+}
+
+.ce-subtitulo {
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.ce-encabezado h2 {
+    margin: 8px 0;
+    font-size: clamp(26px, 4vw, 36px);
+}
+
+.ce-encabezado > p:last-child {
+    color: #64748b;
+    line-height: 1.6;
+    max-width: 720px;
+}
+
+.ce-tarjeta,
+.ce-confirmacion {
+    background: #fff;
+    padding: 28px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .04);
+}
+
+.ce-tarjeta-titulo {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.ce-numero {
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 800;
+}
+
+.ce-tarjeta h3 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.ce-tarjeta-titulo p {
+    color: #64748b;
+    margin: 5px 0 0;
+    font-size: 13px;
+}
+
+.ce-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.ce-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ce-campo label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.ce-campo label span {
+    color: #dc2626;
+}
+
+.ce-campo input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font: inherit;
+    color: #0f172a;
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.ce-campo input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.ce-campo input[aria-invalid="true"] {
+    border-color: #dc2626;
+}
+
+.ce-error-campo {
+    font-size: 12px;
+    color: #b91c1c;
+}
+
+.ce-error {
+    padding: 14px 18px;
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.ce-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin: 24px 0;
+}
+
+.ce-acciones button {
+    padding: 13px 22px;
+    border-radius: 9px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ce-boton-principal {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+}
+
+.ce-boton-principal:hover {
+    background: #1d4ed8;
+}
+
+.ce-boton-secundario {
+    background: #fff;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.ce-acciones button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.ce-confirmacion {
+    text-align: center;
+    border-color: #86efac;
+}
+
+.ce-confirmacion-icono {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.ce-confirmacion h3 {
+    font-size: 23px;
+}
+
+.ce-confirmacion p {
+    color: #64748b;
+}
+
+.ce-codigo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 22px 0;
+    padding: 18px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    overflow-wrap: anywhere;
+}
+
+.ce-codigo small {
+    color: #64748b;
+}
+
+.ce-codigo strong {
+    color: #1d4ed8;
+    font-size: 21px;
+    letter-spacing: 1px;
+}
+
+.ce-resumen {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.ce-resumen span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ce-badge {
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 50px;
+    padding: 7px 12px;
+    font-size: 12px;
+}
+
+.ce-enlace {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: #2563eb;
+    border-radius: 9px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.ce-enlace:hover {
+    background: #1d4ed8;
+}
+
+@media (max-width: 700px) {
+    .ce-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ce-tarjeta,
+    .ce-confirmacion {
+        padding: 18px;
+    }
+
+    .ce-acciones {
+        flex-direction: column;
+    }
+
+    .ce-acciones button {
+        width: 100%;
+    }
+}

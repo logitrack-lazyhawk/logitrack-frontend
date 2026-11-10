@@ -3,6 +3,11 @@ import axiosClient from "./axiosClient";
 
 const BASE_URL = "/api/v1/envios/mis-envios";
 
+export async function crearMiEnvio(datos) {
+    const response = await axiosClient.post(BASE_URL, datos);
+    return response.data;
+}
+
 export async function obtenerMisEnvios(page = 0, size = 8) {
     const response = await axiosClient.get(BASE_URL, {
         params: { page, size },
