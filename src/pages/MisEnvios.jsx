@@ -1,10 +1,17 @@
-
 import { useEffect, useState } from "react";
 import {
     obtenerMisEnvios,
     obtenerMiEnvioPorTracking,
 } from "../api/enviosApi";
 import "./MisEnvios.css";
+import EnvioCardWeb from "../components/EnvioCardWeb.jsx";
+
+/**
+ * MisEnvios.jsx
+ * Página para que los clientes puedan consultar sus envíos.
+ * @author Equipo de LazyHawks
+ * @version 1.0.0
+ */
 
 const PAGE_SIZE = 8;
 
@@ -313,36 +320,27 @@ export default function MisEnvios() {
 
                 {!cargando && !error && envios.length > 0 && (
                     <>
+
                         <div className="lt-lista">
                             {envios.map((envio) => (
-                                <article
+                                <EnvioCardWeb
                                     key={envio.id}
-                                    className="lt-envio-item"
-                                >
-                                    <div>
-                                        <strong>
-                                            {envio.codigoSeguimiento}
-                                        </strong>
-                                        <p>
-                                            {formatearDireccion(envio.destino)}
-                                        </p>
-                                    </div>
+                                    envio={envio}
+                                    contexto="cliente"
+                                    onSeleccionar={({ id }) => {
+                                        const encontrado = envios.find(
+                                            (item) => String(item.id) === id
+                                        );
 
-                                    <EstadoBadge estado={envio.estado} />
-
-                                    <button
-                                        type="button"
-                                        className="lt-secondary-btn"
-                                        onClick={() => {
-                                            setSeleccionado(envio);
-                                            setCodigo(envio.codigoSeguimiento);
-                                        }}
-                                    >
-                                        Ver detalle
-                                    </button>
-                                </article>
+                                        if (encontrado) {
+                                            setSeleccionado(encontrado);
+                                            setCodigo(encontrado.codigoSeguimiento);
+                                        }
+                                    }}
+                                />
                             ))}
                         </div>
+
 
                         <div className="lt-paginacion">
                             <button
