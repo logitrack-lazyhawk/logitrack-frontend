@@ -30,7 +30,15 @@ export default function Layout() {
                         Mis envíos
                     </Link>
                     <Link to="/repartidores" style={{ color: 'white', textDecoration: 'none' }}>Repartidores</Link>
-
+                    <Link
+                        to="/play"
+                        style={{
+                            color: "white",
+                            textDecoration: "none"
+                        }}
+                    >
+                        ▶ LazyHawk Play
+                    </Link>
                     <button onClick={handleLogout} style={{ marginTop: '50px', padding: '8px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         Cerrar Sesión
                     </button>
