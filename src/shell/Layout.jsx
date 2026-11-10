@@ -26,6 +26,9 @@ export default function Layout() {
                 <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
                     <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
                     <Link to="/envios" style={{ color: 'white', textDecoration: 'none' }}>Envíos</Link>
+                    <Link to="/mis-envios" style={{ color: 'white', textDecoration: 'none' }}>
+                        Mis envíos
+                    </Link>
                     <Link to="/repartidores" style={{ color: 'white', textDecoration: 'none' }}>Repartidores</Link>
 
                     <button onClick={handleLogout} style={{ marginTop: '50px', padding: '8px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
