@@ -544,4 +544,237 @@ body {
     .play-hover-icon {
         transition: none;
     }
+
+
+    /* =========================================
+       LAZYHAWK PLAY - TEMA CLARO
+       Mantiene estructura y funcionalidades
+       ========================================= */
+
+    .play-app {
+        background: #f6f8f6;
+        color: #20332f;
+    }
+
+    .play-header {
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid #dfe7e2;
+    }
+
+    .play-brand,
+    .play-brand__text {
+        color: #20332f;
+    }
+
+    .play-brand__text b,
+    .play-back:hover {
+        color: #17634a;
+    }
+
+    .play-brand__icon {
+        background: #17634a;
+        box-shadow: 0 8px 20px rgba(23, 99, 74, 0.15);
+    }
+
+    .play-back {
+        color: #63736d;
+    }
+
+    .play-hero {
+        background: linear-gradient(135deg, #ffffff, #eef5f0);
+        border: 1px solid #dfe7e2;
+        box-shadow: 0 8px 24px rgba(32, 51, 47, 0.05);
+    }
+
+    .play-hero h1,
+    .play-list-heading h2,
+    .play-card-info h3,
+    .play-empty h3,
+    .play-player-header h2 {
+        color: #20332f;
+    }
+
+    .play-hero p,
+    .play-card-info p,
+    .play-empty p,
+    .play-player-info p {
+        color: #63736d;
+    }
+
+    .play-chip,
+    .play-license {
+        background: #eaf3ed;
+        color: #17634a;
+        border: 1px solid #d2e4d8;
+    }
+
+    .play-search {
+        background: #ffffff;
+        color: #63736d;
+        border: 1px solid #dfe7e2;
+    }
+
+    .play-search input {
+        color: #20332f;
+    }
+
+    .play-search input::placeholder {
+        color: #74837b;
+    }
+
+    .play-search:focus-within {
+        border-color: #17634a;
+        box-shadow: 0 0 0 4px rgba(23, 99, 74, 0.08);
+    }
+
+    .play-tabs {
+        border-bottom: 1px solid #dfe7e2;
+    }
+
+    .play-tab {
+        color: #63736d;
+    }
+
+    .play-tab:hover {
+        color: #20332f;
+    }
+
+    .play-tab.active {
+        color: #17634a;
+    }
+
+    .play-tab.active::after {
+        background: #17634a;
+    }
+
+    .play-list-heading span {
+        color: #63736d;
+    }
+
+    .play-card,
+    .play-empty {
+        background: #ffffff;
+        border: 1px solid #dfe7e2;
+        box-shadow: 0 6px 18px rgba(32, 51, 47, 0.05);
+    }
+
+    .play-card:hover {
+        border-color: #adc7b5;
+        box-shadow: 0 12px 28px rgba(32, 51, 47, 0.12);
+    }
+
+    .play-card-button:focus-visible {
+        outline-color: #17634a;
+    }
+
+    .play-player {
+        background: #ffffff;
+        border: 1px solid #dfe7e2;
+    }
+
+    .play-player-header small,
+    .play-player-info small {
+        color: #63736d;
+    }
+
+    .play-player-header button {
+        background: #f0f4f1;
+        color: #20332f;
+    }
+}
+/* ===== LAZYHAWK PLAY: TEMA CLARO ===== */
+
+.play-app {
+    background: #f6f8f6;
+    color: #20332f;
+}
+
+.play-header {
+    background: #ffffff;
+    border-bottom: 1px solid #dfe7e2;
+}
+
+.play-brand,
+.play-brand__text,
+.play-hero h1,
+.play-list-heading h2,
+.play-card-info h3,
+.play-empty h3,
+.play-player-header h2 {
+    color: #20332f;
+}
+
+.play-brand__icon,
+.play-tab.active::after {
+    background: #17634a;
+}
+
+.play-brand__text b,
+.play-tab.active,
+.play-back:hover {
+    color: #17634a;
+}
+
+.play-hero {
+    background: linear-gradient(135deg, #ffffff, #eef5f0);
+    border: 1px solid #dfe7e2;
+    box-shadow: 0 8px 24px #20332f0d;
+}
+
+.play-hero p,
+.play-card-info p,
+.play-empty p,
+.play-player-info p,
+.play-back,
+.play-list-heading span,
+.play-player-info small,
+.play-player-header small {
+    color: #63736d;
+}
+
+.play-chip,
+.play-license {
+    background: #eaf3ed;
+    color: #17634a;
+    border: 1px solid #d2e4d8;
+}
+
+.play-search,
+.play-card,
+.play-empty,
+.play-player {
+    background: #ffffff;
+    border: 1px solid #dfe7e2;
+}
+
+.play-search input {
+    background: transparent;
+    color: #20332f;
+}
+
+.play-search input::placeholder,
+.play-tab {
+    color: #63736d;
+}
+
+.play-tabs {
+    border-bottom: 1px solid #dfe7e2;
+}
+
+.play-tab:hover {
+    color: #20332f;
+}
+
+.play-card {
+    box-shadow: 0 6px 18px #20332f0d;
+}
+
+.play-card:hover {
+    border-color: #adc7b5;
+    box-shadow: 0 12px 28px #20332f1f;
+}
+
+.play-player-header button {
+    background: #f0f4f1;
+    color: #20332f;
 }
