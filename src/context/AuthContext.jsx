@@ -62,37 +62,65 @@ export function AuthProvider({ children }) {
 
         // 1. Intento de autenticación contra el backend / Keycloak
         try {
-            // Intentar primero formato JSON (security-service)
-            const res = await axiosClient.post("/api/auth/login", {
-                email: emailLimpio,
-                password: passLimpio,
+            // El API Gateway enruta /api/auth/login a Keycloak Token Endpoint (/realms/lazyhawk/protocol/openid-connect/token)
+            // Keycloak requiere Content-Type application/x-www-form-urlencoded y los parámetros client_id, grant_type, username y password
+            const params = new URLSearchParams();
+            params.append('client_id', 'logitrack-frontend');
+            params.append('grant_type', 'password');
+            params.append('username', emailLimpio);
+            params.append('password', passLimpio);
+
+            const res = await axiosClient.post("/api/auth/login", params, {
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
             });
 
             const data = res.data;
-            const authToken = data.token || data.access_token;
+            const authToken = data.access_token || data.token;
             if (authToken) {
-                const userRole = data.rol || "ADMIN";
-                const userEmail = data.email || emailLimpio;
+                // Decodificar el rol y datos desde el JWT devuelto por Keycloak
+                let userRole = data.rol;
+                let userEmail = emailLimpio;
+
+                try {
+                    const partes = authToken.split('.');
+                    if (partes.length === 3) {
+                        const payload = JSON.parse(atob(partes[1].replace(/-/g, '+').replace(/_/g, '/')));
+                        const lista = valor => Array.isArray(valor) ? valor : typeof valor === 'string' ? [valor] : [];
+                        const roles = [...lista(payload.roles), ...lista(payload.realm_access?.roles),
+                            ...Object.values(payload.resource_access ?? {}).flatMap(client => lista(client?.roles))]
+                            .filter(rol => typeof rol === 'string').map(rol => rol.toUpperCase().replace(/^ROLE_/, ''));
+                        if (roles.includes('ADMIN')) userRole = 'ADMIN';
+                        else if (roles.includes('CLIENTE')) userRole = 'CLIENTE';
+                        else if (roles.includes('REPARTIDOR')) userRole = 'REPARTIDOR';
+                        else if (roles.includes('VENDEDOR')) userRole = 'VENDEDOR';
+                        else if (roles.length > 0) userRole = roles[0];
+                        userEmail = payload.email || payload.preferred_username || emailLimpio;
+                    }
+                } catch (e) {
+                    console.warn("No se pudo decodificar el payload del token:", e);
+                }
+
+                userRole = userRole || "ADMIN";
 
                 localStorage.setItem("token", authToken);
                 localStorage.setItem("rol", userRole);
                 localStorage.setItem("email", userEmail);
+                window.dispatchEvent(new Event('logitrack:sesion'));
 
                 setToken(authToken);
                 setUser({ email: userEmail, rol: userRole, activo: true });
                 return { success: true };
             }
         } catch (errBackend) {
-            // Si el backend respondió 401 o 400 (Credenciales rechazadas por Keycloak / Spring)
+            // Si el backend/Keycloak respondió 401 o 400 (Credenciales rechazadas por Keycloak)
             if (errBackend.response && (errBackend.response.status === 401 || errBackend.response.status === 400)) {
+                const desc = errBackend.response.data?.error_description || "Credenciales inválidas. Verifica tu correo y contraseña.";
                 return {
                     success: false,
-                    error: "Credenciales inválidas. Verifica tu correo y contraseña.",
+                    error: desc,
                 };
             }
 
-            // Si el backend no está disponible (error de red o fuera de línea),
-            // verificamos ESTRICTAMENTE contra las cuentas autorizadas del Realm
             console.warn("Backend offline o inaccesible, validando contra usuarios del realm:", errBackend.message);
         }
 
