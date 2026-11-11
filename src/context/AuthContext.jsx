@@ -170,32 +170,33 @@ export function AuthProvider({ children }) {
                 email: emailLimpio,
                 password: passLimpio,
                 firstName: nombreLimpio,
+                lastName: "Cliente",
                 rol: "CLIENTE",
             };
             await axiosClient.post("/api/auth/registro", payload);
         } catch (errAuth) {
+            setLoading(false);
             if (errAuth.response?.status === 409) {
-                setLoading(false);
                 return {
                     success: false,
                     error: "El correo electrónico ya se encuentra registrado en el sistema.",
                 };
             }
-            console.warn("Backend Keycloak offline o error de registro:", errAuth.message);
+            const msgError = errAuth.response?.data?.error || errAuth.response?.data?.mensaje || errAuth.message;
+            return {
+                success: false,
+                error: `Error al registrar usuario en el servidor: ${msgError}`,
+            };
         }
 
         // 2. Iniciar sesión para obtener credenciales y token
         const loginRes = await login(emailLimpio, passLimpio);
         if (!loginRes.success) {
-            // Modo de contingencia/demo si el backend no responde
-            const sessionToken = `jwt-cliente-${Date.now()}`;
-            localStorage.setItem("token", sessionToken);
-            localStorage.setItem("rol", "CLIENTE");
-            localStorage.setItem("email", emailLimpio);
-            window.dispatchEvent(new Event("logitrack:sesion"));
-
-            setToken(sessionToken);
-            setUser({ email: emailLimpio, rol: "CLIENTE", nombre: nombreLimpio, activo: true });
+            setLoading(false);
+            return {
+                success: false,
+                error: loginRes.error || "Usuario registrado, pero ocurrió un problema al iniciar sesión. Intenta ingresar desde el Login.",
+            };
         }
 
         // 3. Crear el perfil de cliente en shipment-service (/api/v1/clientes)
