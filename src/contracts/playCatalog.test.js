@@ -53,7 +53,7 @@ test("permite filtrar por categoría", () => {
     const resultado = filtrarVideos(
         videosPlay,
         "",
-        "Demostración"
+        "Recomendados"
     );
 
     assert.equal(resultado.length, 1);
