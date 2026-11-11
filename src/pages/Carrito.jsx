@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { carritoServicio, ordenServicio } from "../services/api";
-import { useNavigate } from "react-router-dom";
 
 const USUARIO_ID = "5905b656-5cb5-4662-a33a-c1e7806ec309";
 
@@ -8,7 +7,6 @@ export default function Carrito() {
     const [carrito, setCarrito] = useState(null);
     const [direccion, setDireccion] = useState("");
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const cargarCarrito = async () => {
@@ -44,10 +42,7 @@ export default function Carrito() {
 
             // 2. Generar la preferencia de pago
             const pagoResponse = await ordenServicio.pagar(ordenId);
-            const initPoint = pagoResponse.data.initPoint;
-
-            // 3. Redirigir a Mercado Pago
-            window.location.href = initPoint;
+            window.location.href = pagoResponse.data.initPoint;
         } catch (error) {
             console.error("Error al iniciar el pago:", error);
             alert("Error al procesar el pago. Revisa la consola.");
