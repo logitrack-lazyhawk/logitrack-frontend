@@ -11,6 +11,11 @@ import Clientes from './pages/Clientes';
 import Comercio from './pages/Comercio';
 import Login from './pages/Login';
 import Play from './pages/Play';
+// --- NUEVOS IMPORTS PARA F28 ---
+import Productos from './pages/Productos';
+import Carrito from './pages/Carrito';
+// -------------------------------
+
 import { obtenerSesion } from './auth/session';
 import { useDemo } from './demo/useDemo';
 import { AuthProvider } from './context/AuthContext';
@@ -49,13 +54,15 @@ export default function App() {
                             <Route element={<ProtectedRoute roles={['CLIENTE']} />}>
                                 <Route path="mis-envios" element={<MisEnvios />} />
                                 <Route path="crear-envio" element={<CrearEnvio />} />
+                                <Route path="productos" element={<Productos />} />
+                                <Route path="carrito" element={<Carrito />} />
                             </Route>
                             <Route path="*" element={
-                                <section className="portal-panel">
-                                    <h1>No encontramos esta página</h1>
-                                    <Link to="/">Volver al inicio</Link>
-                                </section>
-                            } />
+                                                 <section className="portal-panel">
+                                                    <h1>No encontramos esta página</h1>
+                                                    <Link to="/">Volver al inicio</Link>
+                                                </section>
+                                            } />
                         </Route>
                     </Route>
                 </Routes>

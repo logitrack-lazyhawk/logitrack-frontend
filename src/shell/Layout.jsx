@@ -15,6 +15,8 @@ export default function Layout() {
     const sesion = demo ? null : (obtenerSesion() || (authContext?.user ? { roles: [authContext.user.rol], nombre: authContext.user.email } : null));
     const admin = !demo && sesion?.roles?.includes('ADMIN');
     const cliente = demo || (!admin && sesion?.roles?.includes('CLIENTE'));
+
+    // ---  ---
     const links = admin
         ? [
             ['/', 'Inicio', 'home'],
@@ -24,8 +26,15 @@ export default function Layout() {
             ['/comercio', 'Comercio', 'box'],
         ]
         : cliente
-            ? [['/', 'Inicio', 'home'], ['/mis-envios', 'Mis envíos', 'box'], ['/crear-envio', 'Crear envío', 'plus']]
+            ? [
+                ['/', 'Inicio', 'home'],
+                ['/mis-envios', 'Mis envíos', 'box'],
+                ['/crear-envio', 'Crear envío', 'plus'],
+                ['/productos', 'Catálogo', 'box'], // <-- NUEVO
+                ['/carrito', 'Carrito', 'box']      // <-- NUEVO
+            ]
             : [['/', 'Inicio', 'home']];
+    // --------------------------------------------------------------------------
 
     links.push(['/play', 'LazyHawk Play', 'play']);
 
@@ -42,7 +51,7 @@ export default function Layout() {
         <div className={admin ? 'app-shell backoffice' : 'app-shell portal'}>
             <a className="skip-link" href="#contenido">Ir al contenido</a>
             <Toast message={toast.message} type={toast.type}
-                onClose={() => setToast({ ...toast, message: '' })} />
+                   onClose={() => setToast({ ...toast, message: '' })} />
             <header className="site-header">
                 <NavLink to="/" className="brand" aria-label="LogiTrack, inicio">
                     <span className="brand-mark"><Icon name="box" size={25} /></span>
