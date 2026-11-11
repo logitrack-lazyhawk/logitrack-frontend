@@ -18,7 +18,7 @@ export const PaletteTree = () => (
     </Palette>
 )
 
-export function ExampleLoaderComponent() {
+function ExampleLoaderComponent() {
     return (
         <Fragment>Loading...</Fragment>
     )

@@ -1,14 +1,24 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { obtenerSesion, rutaPermitida } from '../auth/session';
 
-export default function ProtectedRoute() {
-    // Verificamos si existe un token en el navegador
-    const isAuthenticated = !!localStorage.getItem("token");
-
-    // Si NO está autenticado, lo redirigimos al login
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
-    }
-
-    // Si está autenticado, mostramos la ruta que quería ver (Outlet)
+export default function ProtectedRoute({ roles = [] }) {
+    const [revision, setRevision] = useState(0);
+    const location = useLocation();
+    const sesion = obtenerSesion();
+    const expira = sesion?.expira;
+    useEffect(() => {
+        const revisar = () => setRevision(valor => valor + 1);
+        window.addEventListener('storage', revisar);
+        window.addEventListener('logitrack:sesion', revisar);
+        const timer = expira ? setTimeout(revisar, Math.min(Math.max(expira - Date.now(), 0) + 25, 2147483647)) : null;
+        return () => {
+            window.removeEventListener('storage', revisar);
+            window.removeEventListener('logitrack:sesion', revisar);
+            clearTimeout(timer);
+        };
+    }, [expira, revision]);
+    if (!sesion) return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />;
+    if (!rutaPermitida(sesion, roles)) return <Navigate to="/" replace />;
     return <Outlet />;
 }

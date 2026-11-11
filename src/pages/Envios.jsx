@@ -12,7 +12,7 @@ export default function Envios() {
             // Intentamos llamar al gateway (va a fallar porque no está enrutado aún)
             await axiosClient.get("/api/v1/envios");
             showToast("Éxito al conectar", "success");
-        } catch (error) {
+        } catch {
             // El interceptor ya maneja el alert, pero podemos usar el Toast
             showToast("Error de prueba: El backend no responde aún", "error");
         } finally {

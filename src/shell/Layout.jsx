@@ -1,50 +1,58 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import Toast from "../components/Toast";
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Toast from '../components/Toast';
+import Icon from '../components/portal/Icon';
+import { cerrarSesion, obtenerSesion } from '../auth/session';
 
 export default function Layout() {
     const navigate = useNavigate();
-    const [toast, setToast] = useState({ message: "", type: "error" });
+    const [toast, setToast] = useState({ message: '', type: 'error' });
+    const sesion = obtenerSesion();
+    const admin = sesion.roles.includes('ADMIN');
+    const cliente = !admin && sesion.roles.includes('CLIENTE');
+    const links = admin
+        ? [['/', 'Inicio', 'home'], ['/envios', 'Envíos', 'box'], ['/repartidores', 'Repartidores', 'truck']]
+        : cliente
+            ? [['/', 'Inicio', 'home'], ['/mis-envios', 'Mis envíos', 'box'], ['/crear-envio', 'Crear envío', 'plus']]
+            : [['/', 'Inicio', 'home']];
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("rol");
-        navigate("/login");
-    };
+    function salir() {
+        cerrarSesion();
+        navigate('/login');
+    }
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh' }}>
-            {/* Componente Toast Global */}
-            <Toast
-                message={toast.message}
-                type={toast.type}
-                onClose={() => setToast({ ...toast, message: "" })}
-            />
-
-            <aside style={{ width: '250px', backgroundColor: '#2c3e50', color: 'white', padding: '20px' }}>
-                <h2>LogiTrack</h2>
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
-                    <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
-                    <Link to="/envios" style={{ color: 'white', textDecoration: 'none' }}>Envíos</Link>
-                    <Link to="/mis-envios" style={{ color: 'white', textDecoration: 'none' }}>
-                        Mis envíos
-                    </Link>
-                    <Link to="/repartidores" style={{ color: 'white', textDecoration: 'none' }}>Repartidores</Link>
-
-                    <button onClick={handleLogout} style={{ marginTop: '50px', padding: '8px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                        Cerrar Sesión
-                    </button>
+        <div className={admin ? 'app-shell backoffice' : 'app-shell portal'}>
+            <a className="skip-link" href="#contenido">Ir al contenido</a>
+            <Toast message={toast.message} type={toast.type}
+                onClose={() => setToast({ ...toast, message: '' })} />
+            <header className="site-header">
+                <NavLink to="/" className="brand" aria-label="LogiTrack, inicio">
+                    <span className="brand-mark"><Icon name="box" size={25} /></span>
+                    <span>Logi<span className="brand-accent">Track</span><small>BY LAZYHAWK</small></span>
+                </NavLink>
+                <nav className="site-nav" aria-label="Navegación principal">
+                    {links.map(([to, label, icon]) => (
+                        <NavLink key={to} to={to} end={to === '/'}>
+                            <Icon name={icon} />{label}
+                        </NavLink>
+                    ))}
                 </nav>
-            </aside>
-
-            <main style={{ flex: 1, padding: '20px', backgroundColor: '#ecf0f1' }}>
-                <header style={{ marginBottom: '20px', borderBottom: '2px solid #bdc3c7', paddingBottom: '10px' }}>
-                    <h1>Panel de Control</h1>
-                </header>
-
-                {/* Pasamos el setToast a las páginas para que puedan mostrar errores */}
-                <Outlet context={{ showToast: (msg, type = "error") => setToast({ message: msg, type }) }} />
+                <button className="logout-button" onClick={salir}>
+                    <Icon name="logout" /><span>Cerrar sesión</span>
+                </button>
+            </header>
+            <div className="context-bar">
+                <span>{admin ? 'Backoffice' : 'Tu portal de envíos'}</span>
+                <span>{sesion.nombre}</span>
+            </div>
+            <main id="contenido" className="site-main" tabIndex={-1}>
+                <Outlet context={{ showToast: (message, type = 'error') => setToast({ message, type }) }} />
             </main>
+            <footer className="site-footer">
+                <span>LogiTrack <strong>·</strong> LazyHawk</span>
+                <span>{admin ? 'Administración de operaciones' : 'Cada envío, más cerca.'}</span>
+            </footer>
         </div>
     );
 }
