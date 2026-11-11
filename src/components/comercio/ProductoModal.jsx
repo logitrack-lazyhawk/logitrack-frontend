@@ -158,3 +158,4 @@ export default function ProductoModal({ isOpen, onClose, onSave, cargando = fals
         </Modal>
     );
 }
+
