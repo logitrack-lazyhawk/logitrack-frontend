@@ -10,6 +10,7 @@ import Repartidores from './pages/Repartidores';
 import Clientes from './pages/Clientes';
 import Comercio from './pages/Comercio';
 import Login from './pages/Login';
+import RegistroCliente from './pages/RegistroCliente';
 import Play from './pages/Play';
 // --- NUEVOS IMPORTS PARA F28 ---
 import Productos from './pages/Productos';
@@ -41,6 +42,7 @@ export default function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/login" element={<Login />} />
+                    <Route path="/registro" element={<RegistroCliente />} />
                     <Route element={<ProtectedRoute />}>
                         <Route path="/play" element={<Play />} />
                         <Route path="/" element={<Layout />}>
