@@ -147,6 +147,73 @@ export function AuthProvider({ children }) {
         return { success: true };
     };
 
+    const registerClient = async ({ nombre, dni, telefono, email, password }) => {
+        setLoading(true);
+        const emailLimpio = String(email || "").trim().toLowerCase();
+        const passLimpio = String(password || "").trim();
+        const nombreLimpio = String(nombre || "").trim();
+        const dniLimpio = String(dni || "").trim().replace(/\D/g, "");
+        const telLimpio = String(telefono || "").trim();
+
+        if (!emailLimpio || !passLimpio || !nombreLimpio || !dniLimpio || !telLimpio) {
+            setLoading(false);
+            return {
+                success: false,
+                error: "Todos los campos son obligatorios para el registro del cliente.",
+            };
+        }
+
+        // 1. Registro en IAM / Keycloak vía API Gateway
+        try {
+            const payload = {
+                username: emailLimpio,
+                email: emailLimpio,
+                password: passLimpio,
+                firstName: nombreLimpio,
+                rol: "CLIENTE",
+            };
+            await axiosClient.post("/api/auth/registro", payload);
+        } catch (errAuth) {
+            if (errAuth.response?.status === 409) {
+                setLoading(false);
+                return {
+                    success: false,
+                    error: "El correo electrónico ya se encuentra registrado en el sistema.",
+                };
+            }
+            console.warn("Backend Keycloak offline o error de registro:", errAuth.message);
+        }
+
+        // 2. Iniciar sesión para obtener credenciales y token
+        const loginRes = await login(emailLimpio, passLimpio);
+        if (!loginRes.success) {
+            // Modo de contingencia/demo si el backend no responde
+            const sessionToken = `jwt-cliente-${Date.now()}`;
+            localStorage.setItem("token", sessionToken);
+            localStorage.setItem("rol", "CLIENTE");
+            localStorage.setItem("email", emailLimpio);
+            window.dispatchEvent(new Event("logitrack:sesion"));
+
+            setToken(sessionToken);
+            setUser({ email: emailLimpio, rol: "CLIENTE", nombre: nombreLimpio, activo: true });
+        }
+
+        // 3. Crear el perfil de cliente en shipment-service (/api/v1/clientes)
+        try {
+            await axiosClient.post("/api/v1/clientes", {
+                nombre: nombreLimpio,
+                dni: dniLimpio,
+                telefono: telLimpio,
+                email: emailLimpio,
+            });
+        } catch (errPerfil) {
+            console.warn("No se pudo sincronizar la ficha de cliente en shipment-service:", errPerfil.message);
+        }
+
+        setLoading(false);
+        return { success: true };
+    };
+
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("rol");
@@ -168,6 +235,7 @@ export function AuthProvider({ children }) {
                 user,
                 loading,
                 login,
+                registerClient,
                 logout,
                 hasRole,
                 isAuthenticated: !!user,

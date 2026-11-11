@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -118,6 +118,14 @@ export default function Login() {
                         {cargando ? 'Ingresando...' : 'Iniciar Sesión'}
                     </button>
                 </form>
+
+                {/* Enlace para registro de nuevos clientes */}
+                <div style={{ margin: '14px 0 18px', textAlign: 'center', fontSize: '0.9rem', color: '#475569' }}>
+                    ¿Sos un nuevo cliente y no tenés cuenta?{' '}
+                    <Link to="/registro" style={{ color: '#0284c7', fontWeight: 600, textDecoration: 'underline' }}>
+                        Registrate acá
+                    </Link>
+                </div>
 
                 {/* Acceso rápido a credenciales del Realm */}
                 <div style={{ margin: '18px 0', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.75rem' }}>
