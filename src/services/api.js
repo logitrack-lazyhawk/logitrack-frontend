@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // URL base del backend (directo al commerce-service por ahora)
-const API_URL = 'http://localhost:8086/api/v1';
+const API_URL = 'http://localhost:8084/api/v1';
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -34,4 +34,12 @@ export const ordenServicio = {
     crear: (usuarioId, direccionDestino) =>
         api.post(`/ordenes/${usuarioId}?direccionDestino=${encodeURIComponent(direccionDestino)}`),
     pagar: (ordenId) => api.patch(`/ordenes/${ordenId}/pagar`),
+};
+// Servicio para LazyHawk Play
+export const playServicio = {
+    listar: (categoria = null) => {
+        const url = categoria ? `/play?categoria=${categoria}` : '/play';
+        return api.get(url);
+    },
+    seed: () => api.post('/play/seed'),
 };
