@@ -1,8 +1,3 @@
-/*
-    * Contrato de datos para envíos
-    * @author: Equipo de LazyHawks
-    * @version: 1.0.0
- */
 export const EVENTO_SELECCION_ENVIO = "logitrack:envio-seleccionado";
 
 export const ETIQUETAS_ESTADO = Object.freeze({
@@ -68,7 +63,7 @@ export function normalizarEnvio(dto) {
         peso: Number.isFinite(peso) ? peso : null,
         origen: formatearDireccion(dto.origen),
         destino: formatearDireccion(dto.destino),
-        repartidorAsignado: Boolean(dto.repartidorId),
+        repartidorAsignado: Boolean(dto.repartidorId ?? dto.repartidorAsignado),
     };
 }
 

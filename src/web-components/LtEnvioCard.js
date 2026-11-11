@@ -1,9 +1,3 @@
-/*
-    * LtEnvioCard.js
-    * Componente web para mostrar información de un envío.
-    * @author: Equipo de LazyHawks
-    * @version: 1.0.0
- */
 import {
     normalizarEnvio,
     crearDetalleSeleccion,
@@ -47,13 +41,47 @@ export class LtEnvioCard extends HTMLElement {
           border-radius: 12px;
         }
 
+        :host([contexto="cliente"]) {
+          font-family: inherit;
+          color: #20332f;
+        }
+
+        :host([contexto="cliente"]) .card {
+          height: 100%;
+          min-height: 190px;
+          margin-bottom: 0;
+          align-items: stretch;
+          flex-direction: column;
+          border-color: #dfe7e2;
+          border-radius: 16px;
+          transition: border-color .18s ease, box-shadow .18s ease;
+        }
+
+        :host([contexto="cliente"]) .card:hover {
+          border-color: #aac7b4;
+          box-shadow: 0 6px 18px #20332f08;
+        }
+
+        :host([contexto="cliente"]) .acciones { justify-content: space-between; }
+        :host([contexto="cliente"]) .contexto { font-size: 10px; }
+        :host([contexto="cliente"]) .contexto,
+        :host([contexto="cliente"]) .destino,
+        :host([contexto="cliente"]) .peso { color: #63736d; }
+        :host([contexto="cliente"]) button {
+          border-color: #d5e4d7;
+          background: #edf4ed;
+          color: #17634a;
+        }
+        :host([contexto="cliente"]) button:hover { background: #dfeddf; }
+
         .card[hidden] {
           display: none;
         }
 
         .contenido {
           flex: 1;
-          min-width: 180px;
+          min-width: min(180px, 100%);
+          overflow-wrap: anywhere;
         }
 
         .contexto {
@@ -213,7 +241,7 @@ export class LtEnvioCard extends HTMLElement {
         this.shadowRoot.querySelector(".contexto").textContent =
             contexto === "admin"
                 ? "BACKOFFICE"
-                : "PORTAL CLIENTE";
+                : "TU ENVÍO";
 
         this.shadowRoot.querySelector(".codigo").textContent =
             envio.codigoSeguimiento;

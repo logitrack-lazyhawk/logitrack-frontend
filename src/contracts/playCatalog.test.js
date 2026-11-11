@@ -50,13 +50,13 @@ test("permite buscar por título", () => {
 });
 
 test("permite filtrar por categoría", () => {
-    const resultado = filtrarVideos(
-        videosPlay,
-        "",
-        "Recomendados"
-    );
+    const catalogo = [
+        { ...videosPlay[0], id: "logistica", categoria: "Logística" },
+        { ...videosPlay[0], id: "otra", categoria: "Otra categoría" },
+    ];
+    const resultado = filtrarVideos(catalogo, "", "Logística");
 
-    assert.equal(resultado.length, 1);
+    assert.deepEqual(resultado.map(video => video.id), ["logistica"]);
 });
 
 test("devuelve vacío cuando no hay coincidencias", () => {
