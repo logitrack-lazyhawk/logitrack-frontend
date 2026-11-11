@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { carritoServicio, ordenServicio } from "../services/api";
 
-const USUARIO_ID = "5905b656-5cb5-4662-a33a-c1e7806ec309";
+const USUARIO_ID = "c4444444-4444-4444-4444-444444444444";
 
 export default function Carrito() {
     const [carrito, setCarrito] = useState(null);
