@@ -148,7 +148,7 @@ export default function Envios() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                        Administración Operativa de Envíos
+                        Administración de envíos
                     </h2>
                     <p className="text-sm text-slate-500">
                         Control del ciclo de vida, trazabilidad, ruteo y asignación de despachos.

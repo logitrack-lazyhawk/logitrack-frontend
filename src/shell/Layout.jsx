@@ -3,19 +3,26 @@ import { useState } from 'react';
 import Toast from '../components/Toast';
 import Icon from '../components/portal/Icon';
 import { cerrarSesion, obtenerSesion } from '../auth/session';
+import { useAuth } from '../context/AuthContext';
 import { useDemo } from '../demo/useDemo';
 import { salirDemo } from '../demo/runtime';
 
 export default function Layout() {
-    const { user, logout, hasRole } = useAuth();
+    const authContext = useAuth();
     const navigate = useNavigate();
     const [toast, setToast] = useState({ message: '', type: 'error' });
     const demo = useDemo();
-    const sesion = demo ? null : obtenerSesion();
-    const admin = !demo && sesion.roles.includes('ADMIN');
-    const cliente = demo || (!admin && sesion.roles.includes('CLIENTE'));
+    const sesion = demo ? null : (obtenerSesion() || (authContext?.user ? { roles: [authContext.user.rol], nombre: authContext.user.email } : null));
+    const admin = !demo && sesion?.roles?.includes('ADMIN');
+    const cliente = demo || (!admin && sesion?.roles?.includes('CLIENTE'));
     const links = admin
-        ? [['/', 'Inicio', 'home'], ['/envios', 'Envíos', 'box'], ['/repartidores', 'Repartidores', 'truck']]
+        ? [
+            ['/', 'Inicio', 'home'],
+            ['/envios', 'Envíos', 'box'],
+            ['/repartidores', 'Repartidores', 'truck'],
+            ['/clientes', 'Clientes', 'users'],
+            ['/comercio', 'Comercio', 'box'],
+        ]
         : cliente
             ? [['/', 'Inicio', 'home'], ['/mis-envios', 'Mis envíos', 'box'], ['/crear-envio', 'Crear envío', 'plus']]
             : [['/', 'Inicio', 'home']];
@@ -24,7 +31,10 @@ export default function Layout() {
 
     function salir() {
         if (demo) salirDemo();
-        else cerrarSesion();
+        else {
+            if (authContext?.logout) authContext.logout();
+            cerrarSesion();
+        }
         navigate('/login');
     }
 
@@ -57,7 +67,7 @@ export default function Layout() {
             )}
             <div className="context-bar">
                 <span>{admin ? 'Backoffice' : 'Tu portal de envíos'}</span>
-                <span>{demo ? 'Cliente de demostración' : sesion.nombre}</span>
+                <span>{demo ? 'Cliente de demostración' : (sesion?.nombre || 'Usuario')}</span>
             </div>
             <main id="contenido" className="site-main" tabIndex={-1}>
                 <Outlet context={{ showToast: (message, type = 'error') => setToast({ message, type }) }} />
