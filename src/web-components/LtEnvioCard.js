@@ -20,8 +20,8 @@ export class LtEnvioCard extends HTMLElement {
       <style>
         :host {
           display: block;
-          font-family: inherit;
-          color: #20332f;
+          font-family: system-ui, sans-serif;
+          color: #1e293b;
         }
 
         * {
@@ -35,18 +35,44 @@ export class LtEnvioCard extends HTMLElement {
           flex-wrap: wrap;
           gap: 18px;
           padding: 20px;
-          height: 100%;
-          min-height: 190px;
-          transition: border-color .18s ease, box-shadow .18s ease;
+          margin-bottom: 12px;
           background: white;
-          border: 1px solid #dfe7e2;
-          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
         }
 
-        .card:hover { border-color: #aac7b4; box-shadow: 0 6px 18px #20332f08; }
+        :host([contexto="cliente"]) {
+          font-family: inherit;
+          color: #20332f;
+        }
 
-        :host([contexto="cliente"]) .card { align-items: stretch; flex-direction: column; }
+        :host([contexto="cliente"]) .card {
+          height: 100%;
+          min-height: 190px;
+          margin-bottom: 0;
+          align-items: stretch;
+          flex-direction: column;
+          border-color: #dfe7e2;
+          border-radius: 16px;
+          transition: border-color .18s ease, box-shadow .18s ease;
+        }
+
+        :host([contexto="cliente"]) .card:hover {
+          border-color: #aac7b4;
+          box-shadow: 0 6px 18px #20332f08;
+        }
+
         :host([contexto="cliente"]) .acciones { justify-content: space-between; }
+        :host([contexto="cliente"]) .contexto { font-size: 10px; }
+        :host([contexto="cliente"]) .contexto,
+        :host([contexto="cliente"]) .destino,
+        :host([contexto="cliente"]) .peso { color: #63736d; }
+        :host([contexto="cliente"]) button {
+          border-color: #d5e4d7;
+          background: #edf4ed;
+          color: #17634a;
+        }
+        :host([contexto="cliente"]) button:hover { background: #dfeddf; }
 
         .card[hidden] {
           display: none;
@@ -59,9 +85,9 @@ export class LtEnvioCard extends HTMLElement {
         }
 
         .contexto {
-          font-size: 10px;
+          font-size: 11px;
           font-weight: 700;
-          color: #63736d;
+          color: #64748b;
           letter-spacing: 1px;
         }
 
@@ -76,7 +102,7 @@ export class LtEnvioCard extends HTMLElement {
         .peso {
           margin: 6px 0 0;
           font-size: 13px;
-          color: #63736d;
+          color: #64748b;
         }
 
         .acciones {
@@ -117,10 +143,10 @@ export class LtEnvioCard extends HTMLElement {
 
         button {
           padding: 9px 14px;
-          border: 1px solid #d5e4d7;
+          border: 1px solid #bfdbfe;
           border-radius: 8px;
-          background: #edf4ed;
-          color: #17634a;
+          background: #eff6ff;
+          color: #1d4ed8;
           font: inherit;
           font-size: 13px;
           font-weight: 600;
@@ -128,7 +154,7 @@ export class LtEnvioCard extends HTMLElement {
         }
 
         button:hover {
-          background: #dfeddf;
+          background: #dbeafe;
         }
 
         button:focus-visible {

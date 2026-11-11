@@ -24,8 +24,9 @@ test('el portal DEMO usa las pantallas reales y sus operaciones no alcanzan el t
     const variableOriginal = process.env.VITE_DEMO_MODE;
     const storageOriginal = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
     let lecturas = 0;
+    let tokenAlmacenado = null;
     Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
-        getItem() { lecturas++; return null; },
+        getItem(clave) { lecturas++; return clave === 'token' ? tokenAlmacenado : null; },
         setItem() { assert.fail('DEMO no debe guardar credenciales ni sesiones'); },
         removeItem() { assert.fail('DEMO no debe borrar una sesión real'); },
     } });
@@ -77,7 +78,16 @@ test('el portal DEMO usa las pantallas reales y sus operaciones no alcanzan el t
                 assert.match(html, /Salir de la demostración/);
                 assert.ok(!html.includes('href="/envios"'));
                 assert.ok(!html.includes('href="/repartidores"'));
+                assert.ok(html.includes('href="/play"'));
             }
+        });
+
+        await t.test('conserva la galería multimedia de develop', async () => {
+            const { default: Play } = await server.ssrLoadModule('/src/pages/Play.jsx');
+            const html = renderPagina(Play);
+            assert.match(html, /Explorá videos/);
+            assert.match(html, /Demostración de LazyHawk Play/);
+            assert.ok(html.includes('href="/"'));
         });
 
         await t.test('crea, lista y consulta por tracking mediante los mocks separados', async () => {
@@ -98,6 +108,41 @@ test('el portal DEMO usa las pantallas reales y sus operaciones no alcanzan el t
             await api.obtenerMisEnvios();
             assert.deepEqual(peticiones, ['/api/v1/envios/mis-envios', '/api/v1/envios/mis-envios']);
         });
+        await t.test('fuera de DEMO mantiene el Backoffice de ADMIN y las restricciones del cliente', async () => {
+            const { default: Envios } = await server.ssrLoadModule('/src/pages/Envios.jsx');
+            const { default: InicioCliente } = await server.ssrLoadModule('/src/pages/InicioCliente.jsx');
+            const claims = rol => Buffer.from(JSON.stringify({
+                sub: 'cuenta-de-prueba@example.com', exp: Math.floor(Date.now() / 1000) + 60, roles: [rol],
+            })).toString('base64url');
+            try {
+                tokenAlmacenado = `eyJhbGciOiJSUzI1NiJ9.${claims('ADMIN')}.firma-solo-para-test`;
+                assert.match(renderProtegida(Guard, ['ADMIN']), /contenido permitido/);
+                assert.equal(renderProtegida(Guard, ['CLIENTE']), '');
+                const admin = renderPagina(Envios, Layout);
+                assert.match(admin, /Administración de envíos/);
+                assert.ok(admin.includes('href="/envios"'));
+                assert.ok(admin.includes('href="/repartidores"'));
+                assert.ok(admin.includes('href="/play"'));
+                assert.ok(!admin.includes('href="/crear-envio"'));
+                assert.ok(!admin.includes('Modo demostración'));
+
+                tokenAlmacenado = `eyJhbGciOiJSUzI1NiJ9.${claims('CLIENTE')}.firma-solo-para-test`;
+                assert.match(renderProtegida(Guard, ['CLIENTE']), /contenido permitido/);
+                assert.equal(renderProtegida(Guard, ['ADMIN']), '');
+                const cliente = renderPagina(InicioCliente, Layout);
+                assert.ok(cliente.includes('href="/crear-envio"'));
+                assert.ok(cliente.includes('href="/mis-envios"'));
+                assert.ok(!cliente.includes('href="/repartidores"'));
+                assert.ok(!cliente.includes('href="/envios"'));
+
+                tokenAlmacenado = `eyJhbGciOiJSUzI1NiJ9.${claims('REPARTIDOR')}.firma-solo-para-test`;
+                assert.equal(renderProtegida(Guard, ['ADMIN']), '');
+                assert.equal(renderProtegida(Guard, ['CLIENTE']), '');
+            } finally {
+                tokenAlmacenado = null;
+            }
+        });
+
         await t.test('sin la variable habilitada no ofrece acceso DEMO ni permite activar los mocks', async () => {
             await server.close();
             process.env.VITE_DEMO_MODE = 'false';

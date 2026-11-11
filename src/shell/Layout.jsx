@@ -19,6 +19,8 @@ export default function Layout() {
             ? [['/', 'Inicio', 'home'], ['/mis-envios', 'Mis envíos', 'box'], ['/crear-envio', 'Crear envío', 'plus']]
             : [['/', 'Inicio', 'home']];
 
+    links.push(['/play', 'LazyHawk Play', 'play']);
+
     function salir() {
         if (demo) salirDemo();
         else cerrarSesion();

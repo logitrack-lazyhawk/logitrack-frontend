@@ -8,6 +8,7 @@ import CrearEnvio from './pages/CrearEnvio';
 import InicioCliente from './pages/InicioCliente';
 import Repartidores from './pages/Repartidores';
 import Login from './pages/Login';
+import Play from './pages/Play';
 import { obtenerSesion } from './auth/session';
 import { useDemo } from './demo/useDemo';
 
@@ -31,6 +32,7 @@ export default function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route element={<ProtectedRoute />}>
+                    <Route path="/play" element={<Play />} />
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Inicio />} />
                         <Route element={<ProtectedRoute roles={['ADMIN']} />}>
