@@ -1,14 +1,14 @@
 import axios from "axios";
 
-// Creamos una instancia de Axios apuntando al API Gateway
+// Instancia de Axios apuntando al API Gateway
 const axiosClient = axios.create({
-    baseURL: "http://localhost:8066", // El puerto del Gateway
+    baseURL: "http://localhost:8066",
     headers: {
         "Content-Type": "application/json",
     },
 });
 
-// INTERCEPTOR DE PETICIÓN: Adjunta el token automáticamente
+// INTERCEPTOR DE PETICIÓN: Adjunta el token JWT automáticamente
 axiosClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -20,24 +20,29 @@ axiosClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// INTERCEPTOR DE RESPUESTA: Manejo global de errores (F30)
+// INTERCEPTOR DE RESPUESTA: Manejo de errores
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        // Si el token expiró o no es válido (401), sacamos al usuario
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token");
-            window.location.href = "/login"; // Redirección forzada
+        const isAuthRequest =
+            error.config?.url?.includes("/api/auth/login") ||
+            error.config?.url?.includes("/realms/") ||
+            error.config?.url?.includes("/openid-connect/token");
+
+        // Si es una petición de login, dejamos que el componente Login maneje el error sin forzar recarga
+        if (isAuthRequest) {
+            return Promise.reject(error);
         }
 
-        // Si es un 403 (sin permisos), o 400/500, mostramos un mensaje amigable
-        if (error.response && error.response.status === 403) {
-            alert("No tienes permisos para realizar esta acción.");
-        } else if (error.response && error.response.data && error.response.data.message) {
-            // El backend (ProblemDetail) envía un campo 'message'
-            alert(`Error: ${error.response.data.message}`);
-        } else if (error.request) {
-            alert("Error de conexión con el servidor. Intenta más tarde.");
+        // Si el token expiró o fue rechazado en una ruta protegida (401)
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("rol");
+            localStorage.removeItem("email");
+
+            if (window.location.pathname !== "/login") {
+                window.location.href = "/login";
+            }
         }
 
         return Promise.reject(error);
