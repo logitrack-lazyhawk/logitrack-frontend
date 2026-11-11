@@ -7,6 +7,7 @@ import { useDemo } from '../demo/useDemo';
 import { salirDemo } from '../demo/runtime';
 
 export default function Layout() {
+    const { user, logout, hasRole } = useAuth();
     const navigate = useNavigate();
     const [toast, setToast] = useState({ message: '', type: 'error' });
     const demo = useDemo();

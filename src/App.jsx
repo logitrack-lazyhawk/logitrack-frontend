@@ -50,8 +50,8 @@ export default function App() {
                             </section>
                         } />
                     </Route>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
