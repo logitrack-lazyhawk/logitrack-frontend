@@ -9,8 +9,11 @@ import InicioCliente from './pages/InicioCliente';
 import Repartidores from './pages/Repartidores';
 import Login from './pages/Login';
 import { obtenerSesion } from './auth/session';
+import { useDemo } from './demo/useDemo';
 
 function Inicio() {
+    const demo = useDemo();
+    if (demo) return <InicioCliente />;
     const { roles } = obtenerSesion();
     if (roles.includes('ADMIN')) return <Dashboard />;
     if (roles.includes('CLIENTE')) return <InicioCliente />;
