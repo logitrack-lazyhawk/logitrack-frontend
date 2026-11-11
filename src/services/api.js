@@ -1,45 +1,42 @@
-import axios from 'axios';
+import axiosClient from '../api/axiosClient';
 
-// URL base del backend (directo al commerce-service por ahora)
-const API_URL = 'http://localhost:8084/api/v1';
-
-export const api = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+// En el frontend, el API Gateway (puerto 8066) o el proxy de Vite (/api)
+// enrutan todas las peticiones bajo /api/v1 al microservicio correspondiente.
+const BASE_URL = '/api/v1';
 
 // Servicios para Productos
 export const productoServicio = {
     listar: (categoria = null) => {
-        const url = categoria ? `/productos?categoria=${categoria}` : '/productos';
-        return api.get(url);
+        const url = categoria ? `${BASE_URL}/productos?categoria=${encodeURIComponent(categoria)}` : `${BASE_URL}/productos`;
+        return axiosClient.get(url);
     },
-    obtenerPorId: (id) => api.get(`/productos/${id}`),
+    obtenerPorId: (id) => axiosClient.get(`${BASE_URL}/productos/${id}`),
 };
 
 // Servicios para Carrito
 export const carritoServicio = {
-    obtener: (usuarioId) => api.get(`/carritos/${usuarioId}`),
+    obtener: (usuarioId) => axiosClient.get(`${BASE_URL}/carritos/${usuarioId}`),
     agregarItem: (usuarioId, productoId, cantidad) =>
-        api.post(`/carritos/${usuarioId}/items`, { productoId, cantidad }),
+        axiosClient.post(`${BASE_URL}/carritos/${usuarioId}/items`, { productoId, cantidad }),
     eliminarItem: (usuarioId, productoId) =>
-        api.delete(`/carritos/${usuarioId}/items/${productoId}`),
-    vaciar: (usuarioId) => api.delete(`/carritos/${usuarioId}`),
+        axiosClient.delete(`${BASE_URL}/carritos/${usuarioId}/items/${productoId}`),
+    vaciar: (usuarioId) => axiosClient.delete(`${BASE_URL}/carritos/${usuarioId}`),
 };
 
 // Servicios para Órdenes
 export const ordenServicio = {
     crear: (usuarioId, direccionDestino) =>
-        api.post(`/ordenes/${usuarioId}?direccionDestino=${encodeURIComponent(direccionDestino)}`),
-    pagar: (ordenId) => api.patch(`/ordenes/${ordenId}/pagar`),
+        axiosClient.post(`${BASE_URL}/ordenes/${usuarioId}?direccionDestino=${encodeURIComponent(direccionDestino)}`),
+    pagar: (ordenId) => axiosClient.patch(`${BASE_URL}/ordenes/${ordenId}/pagar`),
 };
+
 // Servicio para LazyHawk Play
 export const playServicio = {
     listar: (categoria = null) => {
-        const url = categoria ? `/play?categoria=${categoria}` : '/play';
-        return api.get(url);
+        const url = categoria ? `${BASE_URL}/play?categoria=${encodeURIComponent(categoria)}` : `${BASE_URL}/play`;
+        return axiosClient.get(url);
     },
-    seed: () => api.post('/play/seed'),
+    seed: () => axiosClient.post(`${BASE_URL}/play/seed`),
 };
+
+export const api = axiosClient;

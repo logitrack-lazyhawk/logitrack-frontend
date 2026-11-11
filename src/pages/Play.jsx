@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { playServicio } from "../services/api"; // <-- Importamos el servicio
+import { videosPlay } from "../data/playCatalog";
 import "./Play.css";
 
 // Mapeo de categorías para el filtro (puedes ajustarlo según lo que devuelva el backend)
@@ -11,9 +12,9 @@ export default function Play() {
     const [categoria, setCategoria] = useState("Recomendados");
     const [seleccionado, setSeleccionado] = useState(null);
 
-    // Estados para los datos del backend
-    const [videos, setVideos] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Estados para los datos del backend, con fallback a videosPlay inicial
+    const [videos, setVideos] = useState(videosPlay);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     // Cargar datos del backend al montar el componente
@@ -74,9 +75,6 @@ export default function Play() {
         document.addEventListener("keydown", cerrarConEscape);
         return () => document.removeEventListener("keydown", cerrarConEscape);
     }, [seleccionado]);
-
-    if (loading) return <p style={{ padding: '20px' }}>Cargando LazyHawk Play...</p>;
-    if (error) return <p style={{ padding: '20px', color: 'red' }}>{error}</p>;
 
     return (
         <div className="play-app">
