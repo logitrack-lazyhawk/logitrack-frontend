@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { obtenerSesion, rutaPermitida } from '../auth/session';
 import { useDemo } from '../demo/useDemo';
 
@@ -21,9 +21,9 @@ export default function ProtectedRoute({ roles = [] }) {
         };
     }, [expira, revision]);
     if (demo) {
-        return !roles.length || roles.includes('CLIENTE') ? <Outlet /> : <Navigate to="/" replace />;
+        return !roles.length || roles.includes('CLIENTE') ? <Outlet context={useOutletContext()} /> : <Navigate to="/" replace />;
     }
     if (!sesion) return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />;
     if (!rutaPermitida(sesion, roles)) return <Navigate to="/" replace />;
-    return <Outlet />;
+    return <Outlet context={useOutletContext()} />;
 }
